@@ -1,0 +1,32 @@
+{
+    "tasks": [
+        {
+            "id": 1,
+            "name": "Pasear al perro",
+            "date": "2024-07-13",
+            "description": "Nombre: Pasear al perro - Fecha: 2024-07-13 - Estado: Por realizar",
+            "status": "Por realizar"
+        },
+        {
+            "id": 2,
+            "name": "dskljsdkljklsd",
+            "date": "dsjldslksdjklsd",
+            "status": "sdkljsdlksdjkljsd",
+            "description": "Nombre: dskljsdkljklsd - Fecha: dsjldslksdjklsd - Estado: sdkljsdlksdjkljsd"
+        },
+        {
+            "id": 3,
+            "name": "dsdkldjskksdlsd",
+            "date": "sdlksdjklsdjklsdj",
+            "status": "sdkljsdkldjskljdskl",
+            "description": "Nombre: dsdkldjskksdlsd - Fecha: sdlksdjklsdjklsdj - Estado: sdkljsdkldjskljdskl"
+        },
+        {
+            "id": 4,
+            "name": "sdjklsdjhklsdjklds",
+            "date": "sdklsdjkldsjkljdskl",
+            "status": "sdlsdlkjsdkljdlksd",
+            "description": "Nombre: sdjklsdjhklsdjklds - Fecha: sdklsdjkldsjkljdskl - Estado: sdlsdlkjsdkljdlksd"
+        }
+    ]
+}

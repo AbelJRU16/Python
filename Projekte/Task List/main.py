@@ -1,5 +1,9 @@
 #Task list application
 
+#Imports
+import json
+from datetime import datetime
+
 #Glabal variables
 projekt_name = "Aplicacion - Lista de tareas por hacer";
 option_one = "Opcion #1: Crear una tarea"
@@ -8,96 +12,122 @@ option_three = "Opcion #3: Eliminar una tarea"
 option_fouth = "Opcion #4: Ver las tareas"
 option_fifth = "Opcion #5: salir"
 
-tasks = []
-
 #Functions
-def init():
-    menu()
+def load_tasks():
+    try:
+        with open('task-list.json', 'r') as f:
+            task_list = json.load(f)
+    except FileNotFoundError:
+        task_list = {"tasks": []}
+    return task_list
 
-def getDataInt(text, error):
-    data = ""
-    while data == "":
+def getDataInt(text, min=1, max=1000):
+    data = 0
+    while data == 0 or data<min or data>max:
         try:
             data = int(input(text))
+            if(data<min or data>max):
+                print("Debe ingresar una opcion valida")
         except:
-            data = ""
-            print(error)
+            print("Debe ingresar una opcion valida")
     return data
 
-def getData(name):
+def getData(text):
     data = ""
     while data == "":
         try:
-            data = input(f"{name}: ")
+            data = input(text)
         except:
-            data = ""
-            print(f'{name} Deberia ser un texto')
+            print('Ha ocurrido un error')
     return data
 
-def getId():
-    if(len(tasks) == 0):
-        return 1
-    else:
-        return (tasks[len(tasks) - 1]['id'] + 1)
+def makeDescription(name, date, status):
+    return f'Nombre: {name} - Fecha: {date} - Estado: {status}'
 
-def getTaskById(id):
-    index = 0
-    for task in tasks:
-        if(task['id'] == id):
-            break
-        else:
-            index = index + 1
-    return index
+#Updating IDs
+def updateIds():
+    tasks = load_tasks()
+    count = 1
+    for task in tasks['tasks']:
+        task['id'] = count
+        count = count + 1
+    save_tasks(tasks)
 
-def makeDescription(task):
-    return f'Tarea #{task['id']}: Nombre: {task['name']} - Fecha: {task['date']} - Estado: {task['status']}'
+#creating a new task
+
+def save_tasks(tasks):
+    with open('task-list.json', 'w') as f:
+        json.dump(tasks, f, indent = 4)
 
 def createTask():
-    print()
-    newTask = dict()
-    newTask['id'] = getId()
-    newTask['name'] = input("Ingrese el nombre de la tarea: ")
-    newTask['date'] = input("Ingrese la fecha de la tarea: ")
-    newTask['status'] = input("Ingrese el estado la tarea: ")
-    newTask['description'] = makeDescription(newTask)
-    tasks.append(newTask)
-    print("Tarea creada exitosamente...")
+    tasks = load_tasks()
+
+    name     = getData("\nIngrese el nombre de la tarea: ")
+    date     = getData("Ingrese la fecha de la tarea (YYYY-MM-DD): ")
+    status   = getData("Ingrese el estado de la tarea: ")
+    new_task = {
+        "id"          : len(tasks["tasks"]) + 1,
+        "name"        : name,
+        "date"        : date,
+        "status"      : status,
+        "description" : makeDescription(name, date, status),
+    }
+
+    tasks["tasks"].append(new_task)
+    save_tasks(tasks)
+
+    print("\nTarea creada exitosamente...")
 
 def showAllTask():
+    tasks = load_tasks()
     if(len(tasks) == 0):
         print("\nNo hay Tareas para mostrar")
     else:
         print()
-        for task in tasks:
-            print(task['description'])
+        for task in tasks['tasks']:
+            print(f'Tarea #{task['id']} - {task['description']}')
 
 def updateTask():
-    id = 0
+    tasks = load_tasks()
+    task_id = 0
+
     if(len(tasks) == 0):
         print("\nNo hay Tareas para mostrar")
     else:
         showAllTask()
-        id = getDataInt("\nSeleccione una Tarea para editar (id): ", "Debe ingresar una opcion valida")
-        index = getTaskById(id)
-        print("\nTarea seleccionada", tasks[index]['description'])
-        tasks[index]['name'] = input("Ingrese el nombre de la tarea: ")
-        tasks[index]['date'] = input("Ingrese la fecha de la tarea: ")
-        tasks[index]['status'] = input("Ingrese el estado la tarea: ")
-        tasks[index]['description'] = makeDescription(tasks[index])
-        print("Tarea actualizada exitosamente...")
+        task_id = getDataInt("\nSeleccione una Tarea para editar (id): ", 1, len(tasks["tasks"]))
+        for task in tasks["tasks"]:
+            if task["id"] == task_id:
+                print("\nTarea seleccionada", task['description'])
+                task['name'] = input("\nIngrese el nombre de la tarea: ")
+                task['date'] = input("Ingrese la fecha de la tarea (YYYY-MM-DD): ")
+                task['status'] = input("Ingrese el estado de la tarea: ")
+                task['description'] = makeDescription(task['name'], task['date'], task['status'])
+
+        save_tasks(tasks)
+        print("\nTarea actualizada exitosamente...")
 
 def deleteTask():
-    id = 0
+    tasks = load_tasks()
+    task_id = 0
+
     if(len(tasks) == 0):
         print("\nNo hay Tareas para mostrar")
     else:
         showAllTask()
-        id = getDataInt("\nSeleccione una Tarea para eliminar (id): ", "Debe ingresar una opcion valida")
-        index = getTaskById(id)
-        tasks.pop(index)
+        task_id = getDataInt("\nSeleccione una Tarea para eliminar (id): ", 1, len(tasks["tasks"]))
+        for task in tasks["tasks"]:
+            if task["id"] == task_id:
+                tasks["tasks"].remove(task)
+
+        save_tasks(tasks)
         print("\nTarea eliminada exitosamente...")
 
-def menu():
+    updateIds()
+
+def main():
+    tasks = load_tasks()['tasks']
+
     option = 0
     while True:
         print(
@@ -109,7 +139,7 @@ def menu():
             option_fouth + "\n" +
             option_fifth + "\n"
             )
-        option = getDataInt('Seleccione una opcion: ', 'Debe ingresar una opcion valida')
+        option = getDataInt('Seleccione una opcion: ', 1, 5)
         if(option == 1):
             createTask()
         elif(option == 2):
@@ -120,9 +150,6 @@ def menu():
             showAllTask()
         elif(option == 5):
             break
-        else:
-            print("Ingrese una opcion valida")
 
-
-#Start
-menu()
+if __name__ == "__main__":
+    main()
