@@ -2,15 +2,31 @@
 
 #Imports
 import json
+import inquirer
 from datetime import datetime
 
 #Glabal variables
 projekt_name = "Aplicacion - Lista de tareas por hacer";
-option_one = "Opcion #1: Crear una tarea"
-option_two = "Opcion #2: Editar una tarea"
-option_three = "Opcion #3: Eliminar una tarea"
-option_fouth = "Opcion #4: Ver las tareas"
-option_fifth = "Opcion #5: salir"
+
+main_options = [
+    inquirer.List('option',
+                  message="Selecciona un opcion",
+                  choices=[
+                        "Opcion #1: Crear una tarea",
+                        "Opcion #2: Editar una tarea",
+                        "Opcion #3: Eliminar una tarea",
+                        "Opcion #4: Ver las tareas",
+                        "Opcion #5: salir"
+                    ],
+              ),
+]
+
+questions = [
+    inquirer.List('option',
+                  message="Selecciona un estado",
+                  choices=['Por realizar', 'Iniciado', 'Para despues', 'Completado'],
+              ),
+]
 
 #Functions
 def load_tasks():
@@ -32,17 +48,38 @@ def getDataInt(text, min=1, max=1000):
             print("Debe ingresar una opcion valida")
     return data
 
-def getData(text):
+def getData(text, isaDate=False):
     data = ""
     while data == "":
         try:
             data = input(text)
+            if isaDate and validateDate(data) == False:
+                print('\nIngrese una fecha correcta!\n')
+                data = ""
         except:
             print('Ha ocurrido un error')
     return data
 
+def validateDate(date, format="%Y-%m-%d"):
+    try:
+        datetime.strptime(date, format)
+        return True
+    except ValueError:
+        return False
+
 def makeDescription(name, date, status):
     return f'Nombre: {name} - Fecha: {date} - Estado: {status}'
+
+def getTaskAsInquiring():
+    tasks = load_tasks()
+    task_list = [
+        inquirer.List('option',
+                      message = "Selecciona una tarea",
+                      choices = [f'{task["id"]}: {task["name"]}' for task in tasks["tasks"]],
+                  ),
+    ]
+    choice = inquirer.prompt(task_list)["option"]
+    return choice.split(":")[0]
 
 #Updating IDs
 def updateIds():
@@ -62,28 +99,27 @@ def save_tasks(tasks):
 def createTask():
     tasks = load_tasks()
 
-    name     = getData("\nIngrese el nombre de la tarea: ")
-    date     = getData("Ingrese la fecha de la tarea (YYYY-MM-DD): ")
-    status   = getData("Ingrese el estado de la tarea: ")
+    name     = getData("Ingrese el nombre de la tarea: ")
+    date     = getData("Ingrese la fecha de la tarea (YYYY-MM-DD): ", True)
+    status   = inquirer.prompt(questions)
     new_task = {
         "id"          : len(tasks["tasks"]) + 1,
         "name"        : name,
         "date"        : date,
-        "status"      : status,
-        "description" : makeDescription(name, date, status),
+        "status"      : status['option'],
+        "description" : makeDescription(name, date, status['option']),
     }
 
     tasks["tasks"].append(new_task)
     save_tasks(tasks)
 
-    print("\nTarea creada exitosamente...")
+    print("Tarea creada exitosamente...")
 
 def showAllTask():
     tasks = load_tasks()
     if(len(tasks) == 0):
-        print("\nNo hay Tareas para mostrar")
+        print("No hay Tareas para mostrar")
     else:
-        print()
         for task in tasks['tasks']:
             print(f'Tarea #{task['id']} - {task['description']}')
 
@@ -92,64 +128,61 @@ def updateTask():
     task_id = 0
 
     if(len(tasks) == 0):
-        print("\nNo hay Tareas para mostrar")
+        print("No hay Tareas para mostrar")
     else:
-        showAllTask()
-        task_id = getDataInt("\nSeleccione una Tarea para editar (id): ", 1, len(tasks["tasks"]))
+        #showAllTask()
+        #task_id = getDataInt("\nSeleccione una Tarea para editar (id): ", 1, len(tasks["tasks"]))
+        task_id = int(getTaskAsInquiring())
+
         for task in tasks["tasks"]:
             if task["id"] == task_id:
-                print("\nTarea seleccionada", task['description'])
+                print("Tarea seleccionada", task['description'])
                 task['name'] = input("\nIngrese el nombre de la tarea: ")
-                task['date'] = input("Ingrese la fecha de la tarea (YYYY-MM-DD): ")
-                task['status'] = input("Ingrese el estado de la tarea: ")
+                task['date'] = getData("Ingrese la fecha de la tarea (YYYY-MM-DD): ", True)
+                task['status'] = inquirer.prompt(questions)['option']
                 task['description'] = makeDescription(task['name'], task['date'], task['status'])
 
         save_tasks(tasks)
-        print("\nTarea actualizada exitosamente...")
+        print("Tarea actualizada exitosamente...")
 
 def deleteTask():
     tasks = load_tasks()
     task_id = 0
 
     if(len(tasks) == 0):
-        print("\nNo hay Tareas para mostrar")
+        print("No hay Tareas para mostrar")
     else:
-        showAllTask()
-        task_id = getDataInt("\nSeleccione una Tarea para eliminar (id): ", 1, len(tasks["tasks"]))
+        #showAllTask()
+        #task_id = getDataInt("\nSeleccione una Tarea para eliminar (id): ", 1, len(tasks["tasks"]))
+        task_id = int(getTaskAsInquiring())
+
         for task in tasks["tasks"]:
             if task["id"] == task_id:
                 tasks["tasks"].remove(task)
 
         save_tasks(tasks)
-        print("\nTarea eliminada exitosamente...")
+        print("Tarea eliminada exitosamente...")
 
     updateIds()
 
 def main():
     tasks = load_tasks()['tasks']
 
+    opciones = {
+        'Opcion #1: Crear una tarea'    : createTask,
+        'Opcion #2: Editar una tarea'   : updateTask,
+        'Opcion #3: Eliminar una tarea' : deleteTask,
+        'Opcion #4: Ver las tareas'     : showAllTask,
+    }
+
     option = 0
     while True:
-        print(
-            "\n" +
-            projekt_name + "\n" +
-            option_one + "\n" +
-            option_two + "\n" +
-            option_three + "\n" +
-            option_fouth + "\n" +
-            option_fifth + "\n"
-            )
-        option = getDataInt('Seleccione una opcion: ', 1, 5)
-        if(option == 1):
-            createTask()
-        elif(option == 2):
-            updateTask()
-        elif(option == 3):
-            deleteTask()
-        elif(option == 4):
-            showAllTask()
-        elif(option == 5):
+        print()
+        option = inquirer.prompt(main_options)["option"]
+        if(option == "Opcion #5: salir"):
             break
+        else:
+            opciones[f'{option}']()
 
 if __name__ == "__main__":
     main()
