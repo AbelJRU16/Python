@@ -3,30 +3,53 @@
         {
             "id": 1,
             "name": "Pasear al perro",
-            "date": "2024-07-13",
-            "description": "Nombre: Pasear al perro - Fecha: 2024-07-13 - Estado: Por realizar",
-            "status": "Por realizar"
+            "date": "2024-07-14",
+            "description": "Nombre: Pasear al perro - Fecha: 2024-07-14 - Estado: Iniciado",
+            "status": "Iniciado"
         },
         {
             "id": 2,
-            "name": "dskljsdkljklsd",
-            "date": "dsjldslksdjklsd",
-            "status": "sdkljsdlksdjkljsd",
-            "description": "Nombre: dskljsdkljklsd - Fecha: dsjldslksdjklsd - Estado: sdkljsdlksdjkljsd"
+            "name": "sacar la basura",
+            "date": "2024-07-14",
+            "status": "Para despues",
+            "description": "Nombre: sacar la basura - Fecha: 2024-07-14 - Estado: Para despues"
         },
         {
             "id": 3,
-            "name": "dsdkldjskksdlsd",
-            "date": "sdlksdjklsdjklsdj",
-            "status": "sdkljsdkldjskljdskl",
-            "description": "Nombre: dsdkldjskksdlsd - Fecha: sdlksdjklsdjklsdj - Estado: sdkljsdkldjskljdskl"
+            "name": "jldkfjlsfkskl",
+            "date": "1111-11-11",
+            "status": "Por realizar",
+            "description": "Nombre: jldkfjlsfkskl - Fecha: 1111-11-11 - Estado: Por realizar"
         },
         {
             "id": 4,
-            "name": "sdjklsdjhklsdjklds",
-            "date": "sdklsdjkldsjkljdskl",
-            "status": "sdlsdlkjsdkljdlksd",
-            "description": "Nombre: sdjklsdjhklsdjklds - Fecha: sdklsdjkldsjkljdskl - Estado: sdlsdlkjsdkljdlksd"
+            "name": "dsjkdljsdlkjdkl",
+            "date": "sdkldjskljdkldsjsld",
+            "status": "sdkjdlkjdllkd",
+            "description": "Nombre: dsjkdljsdlkjdkl - Fecha: sdkldjskljdkldsjsld - Estado: sdkjdlkjdllkd"
+        },
+        {
+            "id": 5,
+            "name": "sdkjdljlkjdsl",
+            "date": "2012-12-12",
+            "status": {
+                "opcion": "Por realizar"
+            },
+            "description": "Nombre: sdkjdljlkjdsl - Fecha: 2012-12-12 - Estado: {'opcion': 'Por realizar'}"
+        },
+        {
+            "id": 6,
+            "name": "Hacer la tarea",
+            "date": "2024-7-13",
+            "status": "Completado",
+            "description": "Nombre: Hacer la tarea - Fecha: 2024-7-13 - Estado: Completado"
+        },
+        {
+            "id": 7,
+            "name": "dsjhdkjsdhkjd",
+            "date": "1111-11-11",
+            "status": "Iniciado",
+            "description": "Nombre: dsjhdkjsdhkjd - Fecha: 1111-11-11 - Estado: Iniciado"
         }
     ]
 }
