@@ -3,7 +3,7 @@ import urllib.parse
 import urllib.error
 
 # URL a la que se va a hacer la solicitud
-url = 'http://www.example.com'
+url = 'http://data.pr4e.org/romeo.txt'
 
 # Realizar la solicitud
 try:
